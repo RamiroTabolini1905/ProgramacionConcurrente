@@ -2,6 +2,7 @@ package src;
 
 import org.w3c.dom.Document;// permite manipular el contenido de un documento XML
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;// permite manejar una lista de nodos XML
 
 import javax.xml.parsers.DocumentBuilder;// para construir documentos XML
@@ -15,12 +16,17 @@ public class Parseo {
     private NodeList listaDePlazas;// Lista de nodos correspondientes a las plazas en el XML
     private NodeList listaDeTransiciones;// Lista de nodos correspondientes a las transiciones en el XML
     private NodeList listaDeArcos;// Lista de nodos correspondientes a los arcos en el XML
+    private	int marcadoDeRed[][];
+
 
     public Parseo(String path) {
         leerArchivo(path);
-        imprimirDetallePlazas();
-        imprimirDetalleTransiciones();
-        imprimirDetalleArcos();
+        //imprimirDetallePlazas();
+        //imprimirDetalleTransiciones();
+        //imprimirDetalleArcos();
+        setMarcadoInicial();
+        imprimirMarcadoInicial();
+
     }
 
     public void leerArchivo(String path) {//metodo para leer y parsear el archivo XML
@@ -73,4 +79,42 @@ public class Parseo {
             System.out.println("Arco de " + source + " a " + target);
         }
     }
+    public void setMarcadoInicial() {
+        marcadoDeRed = new int[getTamañoPlaza()][1]; // Inicializa la matriz para el marcado inicial
+
+        // Itera sobre todos los nodos de la lista de plazas
+        for (int i = 0; i < listaDePlazas.getLength(); i++) {
+            Node nodo = listaDePlazas.item(i); // Obtiene el nodo actual de la lista de plazas
+
+            // Verifica si el nodo es de tipo ELEMENT_NODE
+            if (nodo.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element) nodo; // Convierte el nodo a un elemento XML
+
+                // Obtiene el atributo 'id' del elemento y extrae los dígitos para convertirlo en un entero
+                int plaza = Integer.parseInt(element.getAttribute("id").replaceAll("\\D+", ""));
+
+                // Obtiene el valor del elemento 'initialMarking', extrae los dígitos y los convierte en un entero
+                int value = Integer.parseInt(
+                        element.getElementsByTagName("initialMarking")
+                                .item(0)
+                                .getTextContent()
+                                .replaceAll("\\D+", "")
+                );
+
+                // Asigna el valor obtenido a la matriz 'marcadoDeRed' en la posición correspondiente a 'plaza'
+                marcadoDeRed[plaza][0] = value;
+            }
+        }
+    }
+    public void imprimirMarcadoInicial() {
+        System.out.println("Marcado inicial:");
+        for (int i = 0; i < marcadoDeRed.length; i++) {
+            System.out.println("Plaza ID: P" + i + ", Marcado: " + marcadoDeRed[i][0]);
+        }
+    }
+
+    public int getTamañoPlaza(){return listaDePlazas.getLength();}
+    public int getTamañoTransiciones(){return listaDeTransiciones.getLength();}
+    public int getTamañoArcos(){return listaDeArcos.getLength();}
+
 }

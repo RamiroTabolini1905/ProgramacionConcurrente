@@ -17,8 +17,8 @@ public class Parseo {
     private NodeList listaDeTransiciones;// Lista de nodos correspondientes a las transiciones en el XML
     private NodeList listaDeArcos;// Lista de nodos correspondientes a los arcos en el XML
     private	int marcadoDeRed[][];// Para almacenar el marcado acutal de la RdP
-    private int incidenciaPositiva[][];// Plazas que terminan en transiciones(Representa la plaza)
-    private int incidenciaNegativa[][];// Trancisiones que terminan en plazas(Representa la plaza)
+    private int postIncidencia[][];// Plazas que terminan en transiciones(Representa la plaza) I+
+    private int preIncidencia[][];// Trancisiones que terminan en plazas(Representa la plaza) I-
     private int incidencia[][];// Matriz de incidencia. I = (I+) - (I-)
 
 
@@ -119,7 +119,7 @@ public class Parseo {
     public void calcularIncidencia() {
         for (int i = 0; i < getTamañoPlaza(); i++) {
             for (int j = 0; j < getTamañoTransiciones(); j++) {
-                incidencia[i][j] = incidenciaPositiva[i][j] - incidenciaNegativa[i][j];
+                incidencia[i][j] = postIncidencia[i][j] - preIncidencia[i][j];
             }
         }
     }

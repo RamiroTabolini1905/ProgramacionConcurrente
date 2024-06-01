@@ -16,7 +16,10 @@ public class Parseo {
     private NodeList listaDePlazas;// Lista de nodos correspondientes a las plazas en el XML
     private NodeList listaDeTransiciones;// Lista de nodos correspondientes a las transiciones en el XML
     private NodeList listaDeArcos;// Lista de nodos correspondientes a los arcos en el XML
-    private	int marcadoDeRed[][];
+    private	int marcadoDeRed[][];// Para almacenar el marcado acutal de la RdP
+    private int incidenciaPositiva[][];// Plazas que terminan en transiciones(Representa la plaza)
+    private int incidenciaNegativa[][];// Trancisiones que terminan en plazas(Representa la plaza)
+    private int incidencia[][];// Matriz de incidencia. I = (I+) - (I-)
 
 
     public Parseo(String path) {
@@ -113,6 +116,13 @@ public class Parseo {
         }
     }
 
+    public void calcularIncidencia() {
+        for (int i = 0; i < getTamañoPlaza(); i++) {
+            for (int j = 0; j < getTamañoTransiciones(); j++) {
+                incidencia[i][j] = incidenciaPositiva[i][j] - incidenciaNegativa[i][j];
+            }
+        }
+    }
     public int getTamañoPlaza(){return listaDePlazas.getLength();}
     public int getTamañoTransiciones(){return listaDeTransiciones.getLength();}
     public int getTamañoArcos(){return listaDeArcos.getLength();}

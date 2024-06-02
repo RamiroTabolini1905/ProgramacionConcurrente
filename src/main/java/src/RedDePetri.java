@@ -1,5 +1,7 @@
 package src;
 
+import org.w3c.dom.NodeList;
+
 public class RedDePetri {
     private int[][] preIncidencia;
     private int[][] postIncidencia;
@@ -49,6 +51,35 @@ public class RedDePetri {
             System.out.println("Transición " + transicion + " disparada.");
         } else {
             System.out.println("Transición " + transicion + " no puede dispararse.");
+        }
+    }
+
+    public void simular(int pasos, NodeList listaTrancisiones) {
+        for (int paso = 0; paso < pasos; paso++) {
+            System.out.println("Paso " + (paso + 1));
+            boolean transitionFired = false;
+
+            for (int t = 0; t < listaTrancisiones.getLength(); t++) {
+                if (puedeDispararse(t)) {
+                    dispararTransicion(t);
+                    transitionFired = true;
+                    System.out.println("Transición T" + t + " disparada.");
+                    imprimirMarcadoActual();
+                    break;
+                }
+            }
+
+            if (!transitionFired) {
+                System.out.println("No hay transiciones disparables.");
+                break;
+            }
+        }
+    }
+
+    private void imprimirMarcadoActual() {
+        System.out.println("Marcado actual:");
+        for (int i = 0; i < plazas.length; i++) {
+            System.out.println("Plaza ID: P" + i + ", Marcado: " + plazas[i]);
         }
     }
 

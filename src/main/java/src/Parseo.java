@@ -185,6 +185,9 @@ public class Parseo {
     public int getTamañoTransiciones(){return listaDeTransiciones.getLength();}
     public int getTamañoArcos(){return listaDeArcos.getLength();}
 
+    public NodeList getListaDePlazas(){return listaDePlazas;}
+    public NodeList getListaDeTransiciones(){return listaDeTransiciones;}
+    public NodeList getListaDeArcos(){return listaDeArcos;}
     public int[][] getMarcadoDeRed(){return marcadoDeRed;}
     public int[][] getPreIncidencia(){return preIncidencia;}
     public int[][] getPostIncidencia(){return postIncidencia;}

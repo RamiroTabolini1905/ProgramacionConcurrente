@@ -6,14 +6,16 @@ public class Main {
 
         Parseo parseo = new Parseo(pathRedDePetri);
         RedDePetri red = new RedDePetri(parseo.getPreIncidencia(), parseo.getPostIncidencia(), parseo.getIncidencia(), parseo.getPlazasIniciales());
-
+/*
         red.printPlazas();
         red.dispararTransicion(0);
         red.printPlazas();
         red.dispararTransicion(1);
         red.printPlazas();
         red.dispararTransicion(10);
-
         red.printPlazas();
+*/
+        //Cuando simulo 35 llegan todos los clientes a la P14 y es la salida
+        red.simular(35, parseo.getListaDeTransiciones());
     }
 }

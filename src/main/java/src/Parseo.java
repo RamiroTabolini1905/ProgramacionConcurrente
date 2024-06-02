@@ -9,7 +9,6 @@ import javax.xml.parsers.DocumentBuilder;// para construir documentos XML
 import javax.xml.parsers.DocumentBuilderFactory;// para crear nuevas instancias de DocumentBuilder
 import java.io.File;// para manejar archivos en el sistema de archivos
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 public class Parseo {

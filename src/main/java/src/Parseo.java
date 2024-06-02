@@ -20,15 +20,15 @@ public class Parseo {
     private int postIncidencia[][];// Plazas que terminan en transiciones(Representa la plaza) I+
     private int preIncidencia[][];// Trancisiones que terminan en plazas(Representa la plaza) I-
     private int incidencia[][];// Matriz de incidencia. I = (I+) - (I-)
+    private int plazasIniciales[];
 
 
     public Parseo(String path) {
         leerArchivo(path);
-        //imprimirDetallePlazas();
-        //imprimirDetalleTransiciones();
-        //imprimirDetalleArcos();
+
         setMarcadoInicial();
         imprimirMarcadoInicial();
+
         setMatrices();
         calcularIncidencia();
         printMatrix(incidencia);
@@ -153,8 +153,7 @@ public class Parseo {
         }
     }
 
-    public static Element getDirectChild(Element parent, String name)
-    {
+    public static Element getDirectChild(Element parent, String name) {
         for(Node child = parent.getFirstChild(); child != null; child = child.getNextSibling())
         {
             if(child instanceof Element && name.equals(child.getNodeName())) return (Element) child;
@@ -168,6 +167,9 @@ public class Parseo {
             {incidencia[i][j] = postIncidencia[i][j] - preIncidencia[i][j];}
         }
     }
+
+
+
     public static void printMatrix(int[][] matrix) {
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[i].length; j++) {
@@ -185,5 +187,12 @@ public class Parseo {
     public int[][] getPreIncidencia(){return preIncidencia;}
     public int[][] getPostIncidencia(){return postIncidencia;}
     public int[][] getIncidencia(){return incidencia;}
+    public int[] getPlazasIniciales() {
+        int[] plazasIniciales = new int[marcadoDeRed.length];
+        for (int i = 0; i < marcadoDeRed.length; i++) {
+            plazasIniciales[i] = marcadoDeRed[i][0];
+        }
+        return plazasIniciales;
+    }
 
 }

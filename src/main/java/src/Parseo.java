@@ -9,6 +9,7 @@ import javax.xml.parsers.DocumentBuilder;// para construir documentos XML
 import javax.xml.parsers.DocumentBuilderFactory;// para crear nuevas instancias de DocumentBuilder
 import java.io.File;// para manejar archivos en el sistema de archivos
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 public class Parseo {
@@ -16,7 +17,7 @@ public class Parseo {
     private NodeList listaDePlazas;// Lista de nodos correspondientes a las plazas en el XML
     private NodeList listaDeTransiciones;// Lista de nodos correspondientes a las transiciones en el XML
     private NodeList listaDeArcos;// Lista de nodos correspondientes a los arcos en el XML
-    private	int marcadoDeRed[][];// Para almacenar el marcado acutal de la RdP
+    private int marcadoDeRed[][];// Para almacenar el marcado acutal de la RdP
     private int postIncidencia[][];// Plazas que terminan en transiciones(Representa la plaza) I+
     private int preIncidencia[][];// Trancisiones que terminan en plazas(Representa la plaza) I-
     private int incidencia[][];// Matriz de incidencia. I = (I+) - (I-)
@@ -29,7 +30,9 @@ public class Parseo {
         //imprimirDetalleArcos();
         setMarcadoInicial();
         imprimirMarcadoInicial();
-
+        setMatrices();
+        calcularIncidencia();
+        printMatrix(incidencia);
     }
 
     public void leerArchivo(String path) {//metodo para leer y parsear el archivo XML
@@ -39,7 +42,9 @@ public class Parseo {
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();// Crea un DocumentBuilder a partir de la fábrica
             doc = dBuilder.parse(inputFile);// Parsea el archivo XML
             doc.getDocumentElement().normalize();// Normaliza el documento XML
-        } catch (Exception e) {e.printStackTrace();}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         listaDePlazas = doc.getElementsByTagName("place");
         listaDeTransiciones = doc.getElementsByTagName("transition");
@@ -48,6 +53,7 @@ public class Parseo {
         System.out.println("Cantidad de Transiciones " + listaDeTransiciones.getLength());
         System.out.println("Cantidad de Arcos " + listaDeArcos.getLength());
     }
+
     public void imprimirDetallePlazas() {// Método para obtener la información detallada de las plazas
         ArrayList<String> plazas = new ArrayList<>();
         for (int i = 0; i < listaDePlazas.getLength(); i++) {
@@ -61,6 +67,7 @@ public class Parseo {
             System.out.println(plaza);
         }
     }
+
     public void imprimirDetalleTransiciones() {// Método para obtener la información detallada de las transiciones
         ArrayList<String> transiciones = new ArrayList<>();
         for (int i = 0; i < listaDeTransiciones.getLength(); i++) {
@@ -74,6 +81,7 @@ public class Parseo {
             System.out.println(transicion);
         }
     }
+
     public void imprimirDetalleArcos() {// Método para obtener la información detallada de los arcos
         for (int i = 0; i < listaDeArcos.getLength(); i++) {
             Element arco = (Element) listaDeArcos.item(i);
@@ -82,6 +90,7 @@ public class Parseo {
             System.out.println("Arco de " + source + " a " + target);
         }
     }
+
     public void setMarcadoInicial() {
         marcadoDeRed = new int[getTamañoPlaza()][1]; // Inicializa la matriz para el marcado inicial
 
@@ -109,22 +118,69 @@ public class Parseo {
             }
         }
     }
+
     public void imprimirMarcadoInicial() {
         System.out.println("Marcado inicial:");
         for (int i = 0; i < marcadoDeRed.length; i++) {
             System.out.println("Plaza ID: P" + i + ", Marcado: " + marcadoDeRed[i][0]);
         }
     }
+    private void setMatrices() {
+        // SETEAR TAMAÑO DE LAS MATRICES DE INCIDENCIA
+        postIncidencia = new int[getTamañoPlaza()][getTamañoTransiciones()];
+        preIncidencia = new int[getTamañoPlaza()][getTamañoTransiciones()];
+        incidencia = new int[getTamañoPlaza()][getTamañoTransiciones()];
 
-    public void calcularIncidencia() {
-        for (int i = 0; i < getTamañoPlaza(); i++) {
-            for (int j = 0; j < getTamañoTransiciones(); j++) {
-                incidencia[i][j] = postIncidencia[i][j] - preIncidencia[i][j];
+        // SETEAR VALORES DE MATRICES DE INCIDENCIA
+        for (int i = 0; i < getTamañoArcos(); i++) {
+            Node nodo = listaDeArcos.item(i);
+            if (nodo.getNodeType() == Node.ELEMENT_NODE) {
+                Element element = (Element) nodo;
+                Element nodoHijo = getDirectChild(element, "type");
+                String tipoOrigen = element.getAttribute("target").substring(0, 1);
+                int origen = Integer.parseInt(element.getAttribute("target").replaceAll("\\D+", ""));
+                int destino = Integer.parseInt(element.getAttribute("source").replaceAll("\\D+", ""));
+
+                // Solo considero arcos que no sean inhibidores
+                if (!nodoHijo.getAttribute("value").equals("inhibitor")) {
+                    if (tipoOrigen.equals("P")) {
+                        postIncidencia[origen][destino] = 1;
+                    }
+                    if (tipoOrigen.equals("T")) {
+                        preIncidencia[destino][origen] = 1;
+                    }
+                }
             }
         }
     }
+
+    public static Element getDirectChild(Element parent, String name)
+    {
+        for(Node child = parent.getFirstChild(); child != null; child = child.getNextSibling())
+        {
+            if(child instanceof Element && name.equals(child.getNodeName())) return (Element) child;
+        }
+        return null;
+    }
+    private void calcularIncidencia() {
+        for (int i = 0; i < getTamañoPlaza(); i++)
+        {
+            for (int j = 0; j < getTamañoTransiciones(); j++)
+            {incidencia[i][j] = postIncidencia[i][j] - preIncidencia[i][j];}
+        }
+    }
+    public static void printMatrix(int[][] matrix) {
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                System.out.print(matrix[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+
     public int getTamañoPlaza(){return listaDePlazas.getLength();}
     public int getTamañoTransiciones(){return listaDeTransiciones.getLength();}
     public int getTamañoArcos(){return listaDeArcos.getLength();}
+
 
 }

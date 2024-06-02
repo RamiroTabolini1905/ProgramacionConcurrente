@@ -20,14 +20,16 @@ public class Parseo {
     private int postIncidencia[][];// Plazas que terminan en transiciones(Representa la plaza) I+
     private int preIncidencia[][];// Trancisiones que terminan en plazas(Representa la plaza) I-
     private int incidencia[][];// Matriz de incidencia. I = (I+) - (I-)
-    private int plazasIniciales[];
 
 
     public Parseo(String path) {
         leerArchivo(path);
 
         setMarcadoInicial();
-        imprimirMarcadoInicial();
+        //imprimirDetallePlazas();
+        //imprimirDetalleTransiciones();
+        //imprimirDetalleArcos();
+        //imprimirMarcadoInicial();
 
         setMatrices();
         calcularIncidencia();

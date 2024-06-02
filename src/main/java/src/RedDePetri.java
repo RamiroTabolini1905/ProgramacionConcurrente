@@ -1,7 +1,6 @@
 package src;
 
 public class RedDePetri {
-    private	int marcadoDeRed[][];
     private int[][] preIncidencia;
     private int[][] postIncidencia;
     private int[][] incidencia;

@@ -16,6 +16,6 @@ public class Main {
         red.printPlazas();
 */
         //Cuando simulo 35 llegan todos los clientes a la P14 y es la salida
-        red.simular(35, parseo.getListaDeTransiciones());
+        red.simular(35);
     }
 }

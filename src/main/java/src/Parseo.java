@@ -16,7 +16,7 @@ public class Parseo {
     private NodeList listaDePlazas;// Lista de nodos correspondientes a las plazas en el XML
     private NodeList listaDeTransiciones;// Lista de nodos correspondientes a las transiciones en el XML
     private NodeList listaDeArcos;// Lista de nodos correspondientes a los arcos en el XML
-    private int marcadoDeRed[][];// Para almacenar el marcado acutal de la RdP
+    private int marcadoInicial[][];// Para almacenar el marcado acutal de la RdP
     private int postIncidencia[][];// Plazas que terminan en transiciones(Representa la plaza) I+
     private int preIncidencia[][];// Trancisiones que terminan en plazas(Representa la plaza) I-
     private int incidencia[][];// Matriz de incidencia. I = (I+) - (I-)
@@ -93,7 +93,7 @@ public class Parseo {
     }
 
     public void setMarcadoInicial() {
-        marcadoDeRed = new int[getTamañoPlaza()][1]; // Inicializa la matriz para el marcado inicial
+        marcadoInicial = new int[getTamañoPlaza()][1]; // Inicializa la matriz para el marcado inicial
 
         // Itera sobre todos los nodos de la lista de plazas
         for (int i = 0; i < listaDePlazas.getLength(); i++) {
@@ -115,15 +115,15 @@ public class Parseo {
                 );
 
                 // Asigna el valor obtenido a la matriz 'marcadoDeRed' en la posición correspondiente a 'plaza'
-                marcadoDeRed[plaza][0] = value;
+                marcadoInicial[plaza][0] = value;
             }
         }
     }
 
     public void imprimirMarcadoInicial() {
         System.out.println("Marcado inicial:");
-        for (int i = 0; i < marcadoDeRed.length; i++) {
-            System.out.println("Plaza ID: P" + i + ", Marcado: " + marcadoDeRed[i][0]);
+        for (int i = 0; i < marcadoInicial.length; i++) {
+            System.out.println("Plaza ID: P" + i + ", Marcado: " + marcadoInicial[i][0]);
         }
     }
     private void setMatrices() {
@@ -188,14 +188,14 @@ public class Parseo {
     public NodeList getListaDePlazas(){return listaDePlazas;}
     public NodeList getListaDeTransiciones(){return listaDeTransiciones;}
     public NodeList getListaDeArcos(){return listaDeArcos;}
-    public int[][] getMarcadoDeRed(){return marcadoDeRed;}
+    public int[][] getMarcadoInicial(){return marcadoInicial;}
     public int[][] getPreIncidencia(){return preIncidencia;}
     public int[][] getPostIncidencia(){return postIncidencia;}
     public int[][] getIncidencia(){return incidencia;}
     public int[] getPlazasIniciales() {
-        int[] plazasIniciales = new int[marcadoDeRed.length];
-        for (int i = 0; i < marcadoDeRed.length; i++) {
-            plazasIniciales[i] = marcadoDeRed[i][0];
+        int[] plazasIniciales = new int[marcadoInicial.length];
+        for (int i = 0; i < marcadoInicial.length; i++) {
+            plazasIniciales[i] = marcadoInicial[i][0];
         }
         return plazasIniciales;
     }

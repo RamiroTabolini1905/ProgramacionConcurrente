@@ -3,9 +3,9 @@ package src;
 import org.w3c.dom.NodeList;
 
 public class RedDePetri {
-    private int[][] preIncidencia;
-    private int[][] postIncidencia;
-    private int[][] incidencia;
+    private int[][] preIncidencia;// Define cuantos tokens se necesitan en cada plaza para disparar una transicion
+    private int[][] postIncidencia;//Define cuantos tokens se aniaden a cada plaza despues de disparar una transicion
+    private int[][] incidencia;//Es la dif entre las anteriores post - pre
     private int[] plazas; // Estado actual de las plazas
 
     public RedDePetri(int[][] preIncidencia, int[][] postIncidencia, int[][] incidencia, int[] plazasIniciales) {
@@ -54,12 +54,12 @@ public class RedDePetri {
         }
     }
 
-    public void simular(int pasos, NodeList listaTrancisiones) {
+    public void simular(int pasos) {
         for (int paso = 0; paso < pasos; paso++) {
             System.out.println("Paso " + (paso + 1));
             boolean transitionFired = false;
 
-            for (int t = 0; t < listaTrancisiones.getLength(); t++) {
+            for (int t = 0; t < incidencia[0].length; t++) {
                 if (puedeDispararse(t)) {
                     dispararTransicion(t);
                     transitionFired = true;
